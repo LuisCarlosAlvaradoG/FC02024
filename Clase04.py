@@ -46,7 +46,6 @@ arg = params[:-2]
 loc = params[-2]
 scale = params[-1]
 
-
 # Esta es una forma de comprobar que tan bien se ajustan nuestros datos a la distribución. Pero hay muchos test para comprobarlos.
 y, x = np.histogram(CAPM, bins=100, density=True)
 x = (x + np.roll(x, -1))[:-1] / 2.0
