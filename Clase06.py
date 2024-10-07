@@ -26,14 +26,18 @@ def lanzar_moneda(num):
     return caminata
      
 num = 500
-sm = np.array([lanzar_moneda(num) for _ in range(10)])
-
+caminate = lanzar_moneda(num) 
 plt.figure(figsize=(12, 6))
-plt.plot(lanzar_moneda(num), linestyle='-', color='b')
+plt.plot(caminate, linestyle='-', color='b')
 plt.title('Caminata Aleatoria con Lanzamientos de Moneda')
 plt.xlabel('Número de Lanzamientos')
 plt.ylabel('Puntuación')
 plt.show()
+np.mean(caminate)
+np.std(caminate)
+
+
+sm = np.array([lanzar_moneda(num) for _ in range(100)])
 
 plt.figure(figsize=(12, 6))
 plt.plot(sm.T)
