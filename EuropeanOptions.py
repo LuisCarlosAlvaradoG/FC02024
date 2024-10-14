@@ -97,5 +97,5 @@ def graph(t_vals, St_vals, S0, K1, K2, call1, call2, put1, put2, title1, title2)
     plt.show()
 
 graph(t_vals, St_vals, S0, K1, K2, call_K1_vals, call_K2_vals, put_K1_vals, put_K1_vals, "Call European Financial Options", "Put European Financial Options")
-graph(t_vals, St_vals, S0, K1, K2, call_cash_K1_vals, call_cash_K2_vals, put_cash_K1_vals, put_cash_K2_vals, "Call European Binary Options Cash or Nothing", "Put European Binary Options Cash or Nothing")
+graph(t_vals, St_vals, S0, K1, K2, call_cash_K1_vals, call_cash_K2_vals, put_cash_K1_vals, put_cash_K2_vals, "Call European Binary Options Cash or Nothing", "Put European Binary Options Cash or Nothing") 
 graph(t_vals, St_vals, S0, K1, K2, call_asset_K1_vals, call_asset_K2_vals, put_asset_K1_vals, put_asset_K2_vals, "Call European Binary Options Asset or Nothing", "Put European Binary Options Asset or Nothing")
