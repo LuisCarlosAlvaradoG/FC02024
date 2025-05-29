@@ -11,9 +11,9 @@ def best_fit_distribution(data, bins=200, ax=None):
     x = (x + np.roll(x, -1))[:-1] / 2.0
 
     
-    #DISTRIBUTIONS = [st.gennorm,st.genexpon,st.lognorm,st.lomax,st.maxwell,st.mielke,st.nakagami,st.ncx2,st.ncf,
-     #   st.nct,st.norm,st.powerlognorm, st.uniform, st.poisson     ]
-    DISTRIBUTIONS = [st.norm, st.uniform]#, st.poisson,st.expon  ]
+    DISTRIBUTIONS = [st.gennorm,st.genexpon,st.lognorm,st.lomax,st.maxwell,st.mielke,st.nakagami,st.ncx2,st.ncf,
+        st.nct,st.norm,st.powerlognorm, st.uniform, st.poisson     ]
+    #DISTRIBUTIONS = [st.norm, st.uniform]#, st.poisson,st.expon  ]
 
     # Best holders
     best_distribution = st.norm

@@ -110,8 +110,8 @@ T = 1  # Tiempo de vencimiento (1 año)
 t_vals = np.linspace(0, T, 100)  # Valores de t desde 0 hasta T
 S0 = 100  # Precio inicial del activo
 K = 50   # Precio de ejercicio
-r = norm.rvs(.1, .02, 100)
-sigma = norm.rvs(.4, .05, 100) 
+r = .1
+sigma = .4
 
 def simulate_stock_price(S0, r, sigma, T, t_vals):
     np.random.seed(42)  # Para reproducibilidad
