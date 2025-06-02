@@ -1,4 +1,5 @@
 import yfinance as yf
+#yf.__version__
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -6,7 +7,7 @@ from scipy import stats
 import scipy.stats as st
 import numpy as np
 import warnings
-
+#%%
 def get_data(ticker, start):
     data = yf.download(ticker, start= start)#,end=end)
     close_prices = data['Close']
@@ -15,16 +16,17 @@ def get_data(ticker, start):
     log_returns = np.log(close_prices / close_prices.shift(1)).dropna()
 
     return returns, log_returns
-
+#%%
 def descriptive_statistics(returns, log_returns):
-    rd = returns.describe()
+    rd  = returns.describe()
     lrd = log_returns.describe()
-    df = pd.DataFrame({
-    'Returns': rd,
-    'Log Returns': lrd 
-    })
-    return df
 
+    df = pd.concat(
+        {'Returns': rd, 'Log Returns': lrd}, 
+        axis=1
+    )
+    return df
+#%%
 def plot_histogram(returns, log_returns, ticker):
     plt.figure(figsize=(14, 7))
 
@@ -42,7 +44,7 @@ def plot_histogram(returns, log_returns, ticker):
 
     plt.tight_layout()
     plt.show()
-
+#%%
 def two_sample_t_test(returns, log_returns):
     t_stat, p_value = stats.ttest_ind(returns, log_returns, equal_var=True)
     return t_stat, p_value
@@ -55,25 +57,31 @@ def maximum_likelihood(returns, log_returns):
     mu, std = stats.norm.fit(returns)
     mu_l, std_l = stats.norm.fit(log_returns)
     return mu, std, mu_l, std_l
-
-ticker = "FRAGUAB.MX"
-returns, log_returns = get_data(ticker=ticker, start='2014-09-03')
-
+#%%
+ticker = "AMZN"
+returns, log_returns = get_data(ticker=ticker, start='2020-01-01')
+#%%
 descriptive_statistics(returns, log_returns)
-
+#%%
 plot_histogram(returns, log_returns, ticker)
-
+#%%
 t_stat, p_value = two_sample_t_test(returns, log_returns)
 print(f"Two-sample T-test: t-stat = {t_stat}, p-value = {p_value}")
-
+#Si p_value ≥ α
+#→ No rechazas 𝐻0 
+#No hay evidencia suficiente para decir que las medias difieran, así que podemos asumir que las medias son iguales.
+#%%
 w_stat, p_value = levene_test(returns, log_returns)
 print(f"Levene test: w-stat = {w_stat}, p-value = {p_value}")
-
+#Si p_value ≥ 0.05:
+#→ No rechazamos 𝐻0
+#No hay evidencia para descartar que las varianzas sean iguales.
+#%%
 mu, std, mu_l, std_l = maximum_likelihood(returns, log_returns)
 print(f"Maximum Likelihood Estimation: mu = {mu}, std = {std}, mu_log = {mu_l}, std_log = {std_l}")
-
+#%%
 mu_l , mu - (std**2/2)
-
+#%%
 def best_fit_distribution(data, bins=200, ax=None):
     y, x = np.histogram(data, bins=bins, density=True)
     x = (x + np.roll(x, -1))[:-1] / 2.0
@@ -117,5 +125,7 @@ def best_fit_distribution(data, bins=200, ax=None):
 
     return (best_distribution.name, best_params)
 
+#%%
 best_fit_distribution(returns)
+#%%
 best_fit_distribution(log_returns)
