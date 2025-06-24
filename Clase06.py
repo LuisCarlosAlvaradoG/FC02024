@@ -13,7 +13,7 @@ plt.figure()
 plt.plot(np.cumsum(random_walk))
 plt.show()
 
-
+#%%
 def lanzar_moneda(num):
     puntuacion = 0
     caminata = [0]
@@ -36,7 +36,7 @@ plt.show()
 np.mean(caminate)
 np.std(caminate)
 
-
+#%%
 sm = np.array([lanzar_moneda(num) for _ in range(100)])
 
 plt.figure(figsize=(12, 6))
