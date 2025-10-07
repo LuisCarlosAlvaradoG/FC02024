@@ -17,6 +17,22 @@ def get_data(ticker, start):
 
     return returns, log_returns
 #%%
+# pip install pandas-datareader
+from pandas_datareader import data as web
+
+def get_data(ticker, start):
+    sym = ticker if '.' in ticker else f"{ticker}.US"
+    df = web.DataReader(sym, 'stooq') 
+    df = df.sort_index()
+
+    df = df[df.index >= pd.to_datetime(start)]
+    close = df['Close'].astype(float)
+
+    returns = close.pct_change().dropna()
+    log_returns = np.log(close / close.shift(1)).dropna()
+    return returns, log_returns
+
+#%%
 def descriptive_statistics(returns, log_returns):
     rd  = returns.describe()
     lrd = log_returns.describe()
@@ -87,7 +103,7 @@ def best_fit_distribution(data, bins=200, ax=None):
     x = (x + np.roll(x, -1))[:-1] / 2.0
 
     
-    DISTRIBUTIONS = [st.norm, st.uniform]
+    DISTRIBUTIONS = [st.norm, st.uniform, st.lognorm]
 
     best_distribution = st.norm
     best_params = (0.0, 1.0)

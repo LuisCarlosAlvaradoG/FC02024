@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu May 29 16:05:49 2025
-
 @author: Luis Alvarado
 """
 
