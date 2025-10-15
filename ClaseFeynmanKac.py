@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation, PillowWriter
 from matplotlib.collections import LineCollection
+from scipy.stats import norm
 
 # Animación Browniana 2D estilo “neón” sobre fondo negro --------------------------------------------------------------------------------------------------------------------------------
 np.random.seed(7)     # para reproducibilidad
@@ -472,3 +473,116 @@ def on_close(evt):
 fig.canvas.mpl_connect('close_event', on_close)
 
 plt.show()
+
+# Visualiza caminos GBM, la convergencia del precio MC y compara contra la fórmula cerrada.------------------------------------------------------------------------------------------
+np.random.seed(42)
+S0    = 100.0     # Precio inicial
+K     = 100.0     # Strike
+T     = 1.0       # Años a maduración
+r     = 0.05      # Tasa libre de riesgo (constante)
+sigma = 0.20      # Volatilidad anual
+N_MC  = 100_000   # N simulaciones para el precio via Feynman-Kac
+N_paths_plot = 100 # N trayectorias para visualizar
+N_steps = 252     # Pasos por año para visualizar trayectorias
+
+# ---------------------------
+# Funciones auxiliares
+# ---------------------------
+def black_scholes_call(S, K, T, r, sigma):
+    """Precio analítico de una call europea (Black–Scholes)."""
+    if T <= 0 or sigma <= 0:
+        return max(S - K, 0.0) * np.exp(-r*T)
+    d1 = (np.log(S/K) + (r + 0.5*sigma**2)*T) / (sigma*np.sqrt(T))
+    d2 = d1 - sigma*np.sqrt(T)
+    return S*norm.cdf(d1) - K*np.exp(-r*T)*norm.cdf(d2)
+
+def payoff_call(ST, K):
+    return np.maximum(ST - K, 0.0)
+
+# ---------------------------
+# (1) Simulación de trayectorias GBM (para visualizar)
+#     dS_t = r S_t dt + sigma S_t dW_t  (medida neutral al riesgo)
+# ---------------------------
+dt = T / N_steps
+tgrid = np.linspace(0, T, N_steps + 1)
+
+paths = np.empty((N_paths_plot, N_steps + 1))
+paths[:, 0] = S0
+for i in range(N_steps):
+    Z = np.random.randn(N_paths_plot)
+    # Solución exacta del incremento GBM en un paso
+    paths[:, i+1] = paths[:, i] * np.exp((r - 0.5*sigma**2)*dt + sigma*np.sqrt(dt)*Z)
+
+# ---------------------------
+# (2) Simulación directa de S_T (vectorizada) para Monte Carlo
+#     Usamos la solución cerrada: S_T = S0 * exp((r - 0.5*sigma^2)T + sigma sqrt(T) Z)
+# ---------------------------
+Z = np.random.randn(N_MC)
+S_T = S0 * np.exp((r - 0.5*sigma**2)*T + sigma*np.sqrt(T)*Z)
+
+payoffs = payoff_call(S_T, K)            # pagos a T
+disc_payoffs = np.exp(-r*T) * payoffs    # (3) descuento a t
+
+mc_price = disc_payoffs.mean()
+mc_std   = disc_payoffs.std(ddof=1)
+mc_se    = mc_std / np.sqrt(N_MC)        # error estándar
+
+bs_price = black_scholes_call(S0, K, T, r, sigma)
+
+# ---------------------------
+# (4) Curva de convergencia del estimador Monte Carlo
+# ---------------------------
+# Para ver cómo converge el promedio al aumentar N
+cum_avg = np.cumsum(disc_payoffs) / (np.arange(N_MC) + 1)
+
+# ---------------------------
+# Gráficos (4 subplots)
+# ---------------------------
+fig, axs = plt.subplots(2, 2, figsize=(12, 8))
+
+# (1) Trayectorias GBM
+ax = axs[0,0]
+ax.plot(tgrid, paths.T, alpha=0.8)
+ax.set_title("(1) Trayectorias GBM bajo Q")
+ax.set_xlabel("Tiempo")
+ax.set_ylabel("S_t")
+ax.grid(True, alpha=0.3)
+
+# (2) Pago a vencimiento Φ(S_T) (histograma + línea de strike)
+ax = axs[0,1]
+ax.hist(payoffs, bins=60, density=True, alpha=0.75)
+# ax.axvline(K, color='k', linestyle='--', linewidth=1, alpha=0.7, label="Strike K (referencia)")
+ax.set_title("(2) Pago a T: Φ(S_T)=max(S_T-K,0)")
+ax.set_xlabel("Pago")
+ax.set_ylabel("Densidad")
+ax.legend()
+ax.grid(True, alpha=0.3)
+
+# (3) Pagos descontados e^{-rT} Φ(S_T)
+ax = axs[1,0]
+ax.hist(disc_payoffs, bins=60, density=True, alpha=0.75)
+ax.set_title("(3) Pagos descontados a t: e^{-rT} Φ(S_T)")
+ax.set_xlabel("Valor descontado")
+ax.set_ylabel("Densidad")
+ax.grid(True, alpha=0.3)
+
+# (4) Convergencia del estimador MC al precio
+ax = axs[1,1]
+ax.plot(cum_avg, label="Estimador MC (promedio acumulado)")
+ax.axhline(bs_price, color='k', linestyle='--', linewidth=1.5, label=f"Black–Scholes = {bs_price:.4f}")
+ax.set_title("(4) Convergencia Monte Carlo → solución (Feynman–Kac)")
+ax.set_xlabel("Número de simulaciones")
+ax.set_ylabel("Precio estimado")
+ax.legend()
+ax.grid(True, alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+# ---------------------------
+# Resumen en consola
+# ---------------------------
+print("=== Resumen Feynman–Kac (Call europea) ===")
+print(f"Precio Monte Carlo (N={N_MC:,.0f}): {mc_price:.6f}  ± 1.96·SE ≈ [{mc_price-1.96*mc_se:.6f}, {mc_price+1.96*mc_se:.6f}]")
+print(f"Precio Black–Scholes (analítico):     {bs_price:.6f}")
+print(f"Error estándar MC:                     {mc_se:.6f}")
