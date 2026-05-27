@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \"import matplotlib; import numpy as np; print\\(''mpl:'', matplotlib.__version__\\); print\\(''np:'', np.__version__\\); t = np.linspace\\(0, 3, 300\\); print\\(''t[0:1]:'', t[0:1], type\\(t[0:1]\\)\\); print\\(''iterable:'', np.iterable\\(t[0:1]\\)\\); print\\(''iterable list:'', np.iterable\\([1.0]\\)\\)\")",
+      "Bash(python -c \":*)"
+    ]
+  }
+}
