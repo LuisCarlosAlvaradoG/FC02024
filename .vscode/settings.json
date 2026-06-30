@@ -1,0 +1,6 @@
+{
+    "terminal.integrated.gpuAcceleration": "off",
+    "python.REPL.enableREPLSmartSend": false,
+    "python.REPL.sendToNativeREPL": false,
+    "python.REPL.provideVariables": true
+}

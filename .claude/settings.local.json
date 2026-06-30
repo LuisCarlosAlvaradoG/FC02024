@@ -1,8 +1,37 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python -c \"import matplotlib; import numpy as np; print\\(''mpl:'', matplotlib.__version__\\); print\\(''np:'', np.__version__\\); t = np.linspace\\(0, 3, 300\\); print\\(''t[0:1]:'', t[0:1], type\\(t[0:1]\\)\\); print\\(''iterable:'', np.iterable\\(t[0:1]\\)\\); print\\(''iterable list:'', np.iterable\\([1.0]\\)\\)\")",
-      "Bash(python -c \":*)"
+      "Bash(claude plugin *)",
+      "Bash(python -c \"import sys; print\\(sys.executable\\)\")",
+      "Bash(pip list *)",
+      "Bash(pip install *)",
+      "Bash(python -c \"import plotly; print\\('plotly', plotly.__version__\\)\")",
+      "Bash(python 01_market_maker_game.py)",
+      "Bash(python 02_roll_estimator.py)",
+      "Bash(python 03_copeland_galai.py)",
+      "Bash(python -m py_compile quantlab/*.py 01_microestructura/*.py)",
+      "Bash(python 01_signals_and_backtest.py SPY)",
+      "Bash(python 02_optimization.py SPY)",
+      "Bash(python -m py_compile 02_analisis_tecnico/*.py)",
+      "Bash(python -m streamlit run app_microestructura.py --server.headless true --server.port 8601)",
+      "Bash(curl -s -o /dev/null -w \"Microstructure app HTTP %{http_code}\\\\n\" http://localhost:8601)",
+      "Bash(tail -5 /tmp/st2.txt)",
+      "Bash(pkill -f \"8601\")",
+      "Bash(taskkill //F //IM streamlit.exe)",
+      "Bash(pkill -f streamlit)",
+      "Read(//c/Users/luill/.claude/projects/C--Users-luill-OneDrive-Documentos-Clases-ITESO-MyST/memory/**)",
+      "Bash(ls MEMORY.md)",
+      "Bash(python -c ' *)",
+      "Bash(echo \"=== a1 \\(microstructure\\) ===\"; cat /tmp/a1.txt 2>/dev/null | tail -15; echo \"=== a2 \\(strategy lab\\) ===\"; cat /tmp/a2.txt 2>/dev/null | tail -15)",
+      "Bash(python -m streamlit run app_strategy_lab.py --server.headless true --server.port 8620 --server.runOnSave false)",
+      "Bash(curl -s -o /dev/null -w \"health HTTP %{http_code}\\\\n\" http://localhost:8620/_stcore/health)",
+      "Bash(curl -s -o /dev/null -w \"root HTTP %{http_code}\\\\n\" http://localhost:8620/)",
+      "Bash(python 01_gradient_descent_from_scratch.py)",
+      "Bash(python 02_logistic_signal.py SPY)",
+      "Bash(C:/Users/luill/.venvs/myst/Scripts/python.exe -m pip install --upgrade pip --quiet)",
+      "Bash(C:/Users/luill/.venvs/myst/Scripts/python.exe -m pip install numpy pandas scipy matplotlib plotly yfinance scikit-learn streamlit pyarrow tensorflow)",
+      "Bash(C:/Users/luill/.venvs/myst/Scripts/python.exe selftest.py)",
+      "Bash(C:/Users/luill/.venvs/myst/Scripts/python.exe -m py_compile quantlib/*.py app.py selftest.py apptest.py)"
     ]
   }
 }

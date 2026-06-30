@@ -79,8 +79,8 @@ def levene_three_samples(seg1: np.ndarray, seg2: np.ndarray, seg3: np.ndarray):
     return w_stat, p_value
 
 #%% 1) Especifica el ticker y fecha de inicio
-ticker = "AMZN"
-start_date = "2020-01-01"
+ticker = "PLTR"
+start_date = "2022-01-01"
 
 #%% 2) Obtenemos close_prices, simple returns y log-returns
 close_prices, simple_returns, log_returns = get_data(ticker, start_date)
@@ -176,18 +176,3 @@ if p_val_lev_ret < 0.05:
     print("  → Rechazamos H0: Al menos una varianza difiere entre bloques de simple returns.")
 else:
     print("  → No rechazamos H0: No hay evidencia para decir que las 3 varianzas de simple returns difieran.")
-
-
-#%%
-np.random.seed(0)
-
-# Simulamos incrementos ~ N(0,1) para los tiempos t = 1, 2, 3, 4, 5
-increments = np.random.normal(0, 1, size=5)
-
-# Construimos el proceso Wiener: W0 = 0; Wt = suma acumulada de los incrementos
-W = np.concatenate(([0], np.cumsum(increments)))
-
-# Creamos el DataFrame para visualizar valores
-df = pd.DataFrame({'W_t': W})
-
-df
